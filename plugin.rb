@@ -28,7 +28,8 @@ after_initialize do
             if AlternativePassword::check_all(password, self.custom_fields['import_pass'])
                 self.password = password
                 self.custom_fields.delete('import_pass')
-
+                email_token = self.email_tokens.first
+                email_token.update_column(:confirmed, true)
                 if SiteSetting.migratepassword_allow_insecure_passwords
                     return save(validate: false)
                 else
